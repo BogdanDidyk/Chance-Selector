@@ -1,17 +1,12 @@
-function getRandomIndex(probabilities) {
-    const sum = probabilities.reduce((item, acc) => item + acc, 0);
-    const len = probabilities.length;
-    const rnd = Math.random();
-    let probability = 0;
-    let i = 0;
+function getRandomValueByChance(arr, probabilities) {
+    const sum = probabilities.reduce((sum, probability) => sum + probability, 0);
+    const len = arr.length;
+    let rnd = Math.random() * sum;
 
-    while (i < len && rnd >= (probability += probabilities[i] / sum)) i++;
-
-    return i;
-}
-
-function simulateEvent(events, probabilities) {
-    return events[getRandomIndex(probabilities)];
+    for (let i = 0; i < len; i++) {
+        if (rnd < probabilities[i]) return arr[i];
+        rnd -= probabilities[i];
+    }
 }
 
 
@@ -23,7 +18,7 @@ function simulateEvent(events, probabilities) {
         "You have found a diamond!"
     ];
     const probabilities = [0.4, 0.3, 0.2, 0.1];
-    const event = simulateEvent(events, probabilities);
+    const event = getRandomValueByChance(events, probabilities);
     console.log("Your random event:", event);
     console.log("_".repeat(20), "\n");
 })();
@@ -35,7 +30,7 @@ function simulateEvent(events, probabilities) {
     const probabilities = [0.3, 0.2, 0.2, 0.1, 0.15, 0.05];
     let totalEarning = 0;
     setInterval(() => {
-        const currentCasinoEarning = simulateEvent(rewards, probabilities);
+        const currentCasinoEarning = getRandomValueByChance(rewards, probabilities);
         totalEarning += currentCasinoEarning;
         const text = (currentCasinoEarning < 0) ? "lose" : "won";
         const style = (currentCasinoEarning < 0) ? "color:red;" : "color:green;";
